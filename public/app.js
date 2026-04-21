@@ -215,10 +215,7 @@ $('todo-input').addEventListener('input', (e) => {
 });
 
 // ─── ADD TODO ─────────────────────────────────────
-$('add-btn').addEventListener('click', addTodo);
-$('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
-
-const addTodo = async () => {
+async function addTodo() {
   const title    = $('todo-input').value.trim();
   const priority = $('priority-select').value;
   const due_date = $('due-date').value || null;
@@ -235,7 +232,10 @@ const addTodo = async () => {
   } catch (err) {
     showToast(err.message, 'error');
   }
-};
+}
+
+$('add-btn').addEventListener('click', addTodo);
+$('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
 
 // ─── TOGGLE COMPLETE ──────────────────────────────
 const toggleTodo = async (id) => {
