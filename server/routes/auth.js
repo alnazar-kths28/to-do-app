@@ -31,26 +31,21 @@ router.post('/register', async (req, res) => {
 
 // Вход
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password required' });
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password required' });
   }
 
   try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
-
-    console.log('Login attempt:', email);
-    console.log('User found:', user ? user.email : 'NOT FOUND');
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
-    console.log('Password valid:', isValid);
-
     if (!isValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -62,5 +57,4 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 module.exports = router;
