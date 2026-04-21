@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TASKR</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="screen active">
+    <div class="auth-bg"><div class="auth-grid"></div></div>
+    <div class="auth-wrapper">
+      <div class="auth-brand">
+        <div class="brand-logo">
+          <span class="brand-dot"></span>
+          <h1>TASKR</h1>
+        </div>
+        <p class="brand-sub">Manage your tasks. Stay focused.</p>
+      </div>
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-tab="login">Войти</button>
+        <button class="tab-btn" data-tab="register">Регистрация</button>
+      </div>
+      <div id="login-form" class="auth-form active">
+        <div class="input-group">
+          <span class="input-icon">✉</span>
+          <input type="email" id="login-email" placeholder="Email" autocomplete="email"/>
+        </div>
+        <div class="input-group">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="login-password" placeholder="Пароль" autocomplete="current-password"/>
+          <button class="toggle-pw" data-target="login-password">👁</button>
+        </div>
+        <button id="login-btn" class="btn-primary"><span class="btn-text">Войти</span><span class="btn-arrow">→</span></button>
+        <p class="auth-error" id="login-error"></p>
+      </div>
+      <div id="register-form" class="auth-form">
+        <div class="input-group">
+          <span class="input-icon">👤</span>
+          <input type="text" id="reg-username" placeholder="Имя пользователя" autocomplete="username"/>
+        </div>
+        <div class="input-group">
+          <span class="input-icon">✉</span>
+          <input type="email" id="reg-email" placeholder="Email" autocomplete="email"/>
+        </div>
+        <div class="input-group">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="reg-password" placeholder="Пароль" autocomplete="new-password"/>
+          <button class="toggle-pw" data-target="reg-password">👁</button>
+        </div>
+        <div class="password-strength" id="pw-strength">
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <span id="strength-label"></span>
+        </div>
+        <button id="register-btn" class="btn-primary"><span class="btn-text">Создать аккаунт</span><span class="btn-arrow">→</span></button>
+        <p class="auth-error" id="register-error"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SCREEN -->
+  <div id="app-screen" class="screen">
+    <header>
+      <div class="header-left">
+        <span class="brand-dot small"></span>
+        <span class="header-title">TASKR</span>
+      </div>
+      <div class="header-center">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="search-input" placeholder="Поиск задач..."/>
+          <button id="search-clear" class="search-clear hidden">✕</button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button id="theme-btn" class="icon-btn" title="Сменить тему">◐</button>
+        <div class="user-chip">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <span id="user-name"></span>
+        </div>
+        <button id="logout-btn">Выйти</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="stats-bar">
+        <div class="stat"><span id="stat-total">0</span><label>Всего</label></div>
+        <div class="stat"><span id="stat-done">0</span><label>Готово</label></div>
+        <div class="stat"><span id="stat-left">0</span><label>Осталось</label></div>
+        <div class="stat progress-stat">
+          <div class="progress-ring-wrap">
+            <svg class="progress-ring" viewBox="0 0 60 60">
+              <circle class="ring-bg" cx="30" cy="30" r="24"/>
+              <circle class="ring-fill" id="ring-fill" cx="30" cy="30" r="24"/>
+            </svg>
+            <span id="progress-pct">0%</span>
+          </div>
+          <label>Прогресс</label>
+        </div>
+      </div>
+
+      <div class="add-todo">
+        <input type="text" id="todo-input" placeholder="Новая задача..." maxlength="200"/>
+        <div class="add-controls">
+          <select id="priority-select">
+            <option value="low">🟢 Низкий</option>
+            <option value="medium" selected>🟡 Средний</option>
+            <option value="high">🔴 Высокий</option>
+          </select>
+          <input type="date" id="due-date" title="Срок выполнения"/>
+          <button id="add-btn" title="Добавить">+</button>
+        </div>
+        <div class="char-count-wrap"><span class="char-count" id="char-count">0 / 200</span></div>
+      </div>
+
+      <div class="bulk-bar hidden" id="bulk-bar">
+        <span id="bulk-count">0 выбрано</span>
+        <button class="bulk-btn" id="bulk-complete">✓ Выполнить</button>
+        <button class="bulk-btn danger" id="bulk-delete">✕ Удалить</button>
+        <button class="bulk-btn ghost" id="bulk-cancel">Отмена</button>
+      </div>
+
+      <div class="control-bar">
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">Все</button>
+          <button class="filter-btn" data-filter="active">Активные</button>
+          <button class="filter-btn" data-filter="completed">Готовые</button>
+          <button class="filter-btn" data-filter="high">🔴 Срочные</button>
+        </div>
+        <select id="sort-select" class="sort-select">
+          <option value="date-desc">Новые первые</option>
+          <option value="date-asc">Старые первые</option>
+          <option value="priority">По приоритету</option>
+          <option value="alpha">По алфавиту</option>
+          <option value="due">По сроку</option>
+        </select>
+      </div>
+
+      <div class="list-header" id="list-header">
+        <label class="select-all-wrap">
+          <input type="checkbox" id="select-all"/>
+          <span>Выбрать все</span>
+        </label>
+      </div>
+
+      <ul id="todo-list"></ul>
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">✦</div>
+        <p id="empty-text">Нет задач. Добавь первую!</p>
+      </div>
+
+      <!-- Edit Modal -->
+      <div id="edit-modal" class="modal hidden">
+        <div class="modal-backdrop" id="modal-backdrop"></div>
+        <div class="modal-box">
+          <h3>Редактировать задачу</h3>
+          <div class="input-group">
+            <input type="text" id="edit-title" placeholder="Название" maxlength="200"/>
+          </div>
+          <select id="edit-priority">
+            <option value="low">🟢 Низкий</option>
+            <option value="medium">🟡 Средний</option>
+            <option value="high">🔴 Высокий</option>
+          </select>
+          <input type="date" id="edit-due" placeholder="Срок"/>
+          <div class="modal-actions">
+            <button id="edit-save" class="btn-primary">Сохранить</button>
+            <button id="edit-cancel" class="btn-ghost">Отмена</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast hidden"></div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
