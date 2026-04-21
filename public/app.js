@@ -140,17 +140,17 @@ $('register-btn').addEventListener('click', async () => {
 
 // ─── LOGIN ────────────────────────────────────────
 $('login-btn').addEventListener('click', async () => {
-  const email    = $('login-email').value.trim();
+  const username = $('login-username').value.trim();
   const password = $('login-password').value;
   $('login-error').textContent = '';
-  if (!email || !password) {
-    $('login-error').textContent = 'Введи email и пароль';
+  if (!username || !password) {
+    $('login-error').textContent = 'Введи имя пользователя и пароль';
     return;
   }
   const btn = $('login-btn');
   btn.classList.add('loading');
   try {
-    const data = await apiFetch('/auth/login', { method: 'POST', body: { email, password } });
+    const data = await apiFetch('/auth/login', { method: 'POST', body: { username, password } });
     saveSession(data);
     initApp();
   } catch (err) {
